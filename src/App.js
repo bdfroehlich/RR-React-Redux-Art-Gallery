@@ -1,15 +1,34 @@
 import './App.css';
-import Nav from './components/Nav'
-import ContentWrapper from './components/ContentWrapper'
-import Footer from './components/Footer'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchData, incrementId, decrementId, customId, clearData } from './features/dataSlice'
 
 function App() {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.data)
+
+  const renderImg = () => {
+    if(data.apiData) {
+      return <img style={{'width': '100vw'}} src={data.apiData.primaryImage} alt={data.apiData.title} />
+    } else {
+      return <p>image here</p>
+    }
+  }
   
   return (
-    <div style={{ backgroundColor: 'white', color: 'black' }} className="App">
-      <Nav />
-      <ContentWrapper />
-      <Footer />
+    <div className="App">
+      <div>
+        <button onClick={() => dispatch(fetchData())}>THUNK!!!</button>
+        <button onClick={() => dispatch(incrementId())}>Next</button>
+        <button onClick={() => dispatch(decrementId())}>Back</button>
+        <button onClick={() => dispatch(clearData())}>Clear</button>
+      </div>
+      <input value={ data.objectId } onChange={(e) => {
+        dispatch(customId(Number(e.target.value)))
+      }} />
+      <div>
+        {data.objectId}
+        {renderImg()}
+      </div>
     </div>
   );
 }
